@@ -52,34 +52,39 @@
             dateTimePicker1 = new DateTimePicker();
             label4 = new Label();
             tbEmail = new TextBox();
+            label9 = new Label();
+            cbNganhhoc = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbEmployeeImage).BeginInit();
             SuspendLayout();
             // 
             // btThoat
             // 
+            btThoat.BackColor = Color.MediumSpringGreen;
             btThoat.Location = new Point(879, 501);
             btThoat.Margin = new Padding(3, 4, 3, 4);
             btThoat.Name = "btThoat";
             btThoat.Size = new Size(110, 40);
             btThoat.TabIndex = 0;
             btThoat.Text = "Thoát";
-            btThoat.UseVisualStyleBackColor = true;
+            btThoat.UseVisualStyleBackColor = false;
             btThoat.Click += btThoat_Click;
             // 
             // btDangXuat
             // 
+            btDangXuat.BackColor = Color.DeepSkyBlue;
             btDangXuat.Location = new Point(1057, 0);
             btDangXuat.Margin = new Padding(3, 4, 3, 4);
             btDangXuat.Name = "btDangXuat";
             btDangXuat.Size = new Size(122, 44);
             btDangXuat.TabIndex = 1;
             btDangXuat.Text = "Đăng xuất";
-            btDangXuat.UseVisualStyleBackColor = true;
+            btDangXuat.UseVisualStyleBackColor = false;
             btDangXuat.Click += btDangXuat_Click;
             // 
             // dgvEmployee
             // 
+            dgvEmployee.BackgroundColor = SystemColors.GradientInactiveCaption;
             dgvEmployee.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvEmployee.Location = new Point(12, 48);
             dgvEmployee.Margin = new Padding(3, 4, 3, 4);
@@ -111,7 +116,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(14, 387);
+            label3.Location = new Point(12, 387);
             label3.Name = "label3";
             label3.Size = new Size(38, 20);
             label3.TabIndex = 5;
@@ -130,7 +135,7 @@
             tbName.Location = new Point(73, 325);
             tbName.Margin = new Padding(3, 4, 3, 4);
             tbName.Name = "tbName";
-            tbName.Size = new Size(246, 27);
+            tbName.Size = new Size(260, 27);
             tbName.TabIndex = 8;
             // 
             // ckGender
@@ -138,7 +143,7 @@
             ckGender.AutoSize = true;
             ckGender.Checked = true;
             ckGender.CheckState = CheckState.Checked;
-            ckGender.Location = new Point(14, 431);
+            ckGender.Location = new Point(14, 433);
             ckGender.Margin = new Padding(3, 4, 3, 4);
             ckGender.Name = "ckGender";
             ckGender.Size = new Size(63, 24);
@@ -148,32 +153,35 @@
             // 
             // btAddNew
             // 
+            btAddNew.BackColor = Color.CornflowerBlue;
             btAddNew.Location = new Point(293, 501);
             btAddNew.Margin = new Padding(3, 4, 3, 4);
             btAddNew.Name = "btAddNew";
             btAddNew.Size = new Size(104, 40);
             btAddNew.TabIndex = 10;
-            btAddNew.UseVisualStyleBackColor = true;
+            btAddNew.UseVisualStyleBackColor = false;
             btAddNew.Click += btAddNew_Click;
             // 
             // btEdit
             // 
+            btEdit.BackColor = Color.DeepSkyBlue;
             btEdit.Location = new Point(494, 501);
             btEdit.Margin = new Padding(3, 4, 3, 4);
             btEdit.Name = "btEdit";
             btEdit.Size = new Size(104, 40);
             btEdit.TabIndex = 11;
-            btEdit.UseVisualStyleBackColor = true;
+            btEdit.UseVisualStyleBackColor = false;
             btEdit.Click += btEdit_Click;
             // 
             // btDelete
             // 
+            btDelete.BackColor = Color.Red;
             btDelete.Location = new Point(681, 501);
             btDelete.Margin = new Padding(3, 4, 3, 4);
             btDelete.Name = "btDelete";
             btDelete.Size = new Size(104, 40);
             btDelete.TabIndex = 12;
-            btDelete.UseVisualStyleBackColor = true;
+            btDelete.UseVisualStyleBackColor = false;
             btDelete.Click += btDelete_Click;
             // 
             // label5
@@ -182,9 +190,9 @@
             label5.Font = new Font("Segoe UI", 15F);
             label5.Location = new Point(532, 0);
             label5.Name = "label5";
-            label5.Size = new Size(204, 35);
+            label5.Size = new Size(215, 35);
             label5.TabIndex = 13;
-            label5.Text = "Quản lý sinh viên";
+            label5.Text = "Quản Lý Sinh Viên";
             // 
             // tbAddress
             // 
@@ -226,10 +234,10 @@
             // 
             cbMalop.FormattingEnabled = true;
             cbMalop.Items.AddRange(new object[] { "CCQ2211A", "CCQ2211B", "CCQ2211C", "CCQ2211D", "CCQ2211E", "CCQ2211F", "CCQ2211G", "CCQ2211H", "CCQ2211I", "CCQ2211J", "CCQ2211K", "CCQ2211L", "CCQ2211M", "CCQ2211N", "CCQ2211LA" });
-            cbMalop.Location = new Point(955, 271);
+            cbMalop.Location = new Point(980, 274);
             cbMalop.Margin = new Padding(3, 4, 3, 4);
             cbMalop.Name = "cbMalop";
-            cbMalop.Size = new Size(267, 28);
+            cbMalop.Size = new Size(167, 28);
             cbMalop.TabIndex = 20;
             // 
             // tbPhone
@@ -243,17 +251,17 @@
             // 
             // pbEmployeeImage
             // 
-            pbEmployeeImage.Location = new Point(879, 325);
+            pbEmployeeImage.Location = new Point(1069, 373);
             pbEmployeeImage.Margin = new Padding(3, 4, 3, 4);
             pbEmployeeImage.Name = "pbEmployeeImage";
-            pbEmployeeImage.Size = new Size(90, 107);
+            pbEmployeeImage.Size = new Size(125, 168);
             pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage;
             pbEmployeeImage.TabIndex = 22;
             pbEmployeeImage.TabStop = false;
             // 
             // btSelectImage
             // 
-            btSelectImage.Location = new Point(1033, 332);
+            btSelectImage.Location = new Point(880, 385);
             btSelectImage.Margin = new Padding(3, 4, 3, 4);
             btSelectImage.Name = "btSelectImage";
             btSelectImage.Size = new Size(109, 33);
@@ -264,10 +272,10 @@
             // 
             // dateTimePicker1
             // 
-            dateTimePicker1.Location = new Point(65, 380);
+            dateTimePicker1.Location = new Point(73, 378);
             dateTimePicker1.Margin = new Padding(3, 4, 3, 4);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(166, 27);
+            dateTimePicker1.Size = new Size(260, 27);
             dateTimePicker1.TabIndex = 24;
             dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
             // 
@@ -285,14 +293,35 @@
             tbEmail.Location = new Point(517, 387);
             tbEmail.Margin = new Padding(3, 4, 3, 4);
             tbEmail.Name = "tbEmail";
-            tbEmail.Size = new Size(183, 27);
+            tbEmail.Size = new Size(219, 27);
             tbEmail.TabIndex = 26;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(879, 328);
+            label9.Name = "label9";
+            label9.Size = new Size(81, 20);
+            label9.TabIndex = 27;
+            label9.Text = "Ngành học";
+            // 
+            // cbNganhhoc
+            // 
+            cbNganhhoc.FormattingEnabled = true;
+            cbNganhhoc.Items.AddRange(new object[] { "Công Nghệ Thông Tin ", "Quản Trị Kinh Doanh", "Công Nghệ Thực Phẩm ", "Ngôn Ngữ Anh ", "Công Nghệ Ôtô" });
+            cbNganhhoc.Location = new Point(980, 324);
+            cbNganhhoc.Name = "cbNganhhoc";
+            cbNganhhoc.Size = new Size(254, 28);
+            cbNganhhoc.TabIndex = 29;
             // 
             // Quanly
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.LightCyan;
             ClientSize = new Size(1248, 554);
+            Controls.Add(cbNganhhoc);
+            Controls.Add(label9);
             Controls.Add(tbEmail);
             Controls.Add(label4);
             Controls.Add(dateTimePicker1);
@@ -355,5 +384,8 @@
         private DateTimePicker dateTimePicker1;
         private Label label4;
         private TextBox tbEmail;
+        private Label label9;
+        private Label label10;
+        private ComboBox cbNganhhoc;
     }
 }

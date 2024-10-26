@@ -17,6 +17,8 @@ namespace Quanlyview
         public string Sodienthoai { get; set; }
         public string Email { get; set; }
         public string Malop { get; set; }
+        public string Nganhhoc { get; set; }
+
         public string ImagePath { get; set; }
     }
 }

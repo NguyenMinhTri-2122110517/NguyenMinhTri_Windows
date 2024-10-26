@@ -2,8 +2,8 @@ namespace Quanlyview
 {
     public partial class Form1 : Form
     {
-        string tentaikhoan = "admin";
-        string matkhau = "123";
+        string tentaikhoan = "tri";
+        string matkhau = "2808";
         public Form1()
         {
             InitializeComponent();
@@ -65,13 +65,19 @@ namespace Quanlyview
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked == true) { 
-                   tbMatKhau.UseSystemPasswordChar = false;
+            if (checkBox1.Checked == true)
+            {
+                tbMatKhau.UseSystemPasswordChar = false;
             }
             else
             {
-                tbMatKhau.UseSystemPasswordChar=true;
+                tbMatKhau.UseSystemPasswordChar = true;
             }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

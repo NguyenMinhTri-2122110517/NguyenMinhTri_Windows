@@ -54,6 +54,7 @@ namespace Quanlyview
             dgvEmployee.Columns[5].HeaderText = "Số Điện Thoại";
             dgvEmployee.Columns[6].HeaderText = "Email";
             dgvEmployee.Columns[7].HeaderText = "Mã Lớp";
+            dgvEmployee.Columns[7].HeaderText = "Ngành Học";
             dgvEmployee.Columns[8].HeaderText = "Ảnh"; // Add header for Birth Date
         }
 
@@ -76,6 +77,57 @@ namespace Quanlyview
         {
             try
             {
+                tbId.Enabled = true; // Đảm bảo mở khóa ô ID khi thêm mới
+
+                // Kiểm tra từng trường dữ liệu có hợp lệ không
+                if (string.IsNullOrWhiteSpace(tbId.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng nhập mã sinh viên.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(tbName.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng nhập tên sinh viên.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(tbAddress.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng nhập địa chỉ.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(tbPhone.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng nhập số điện thoại.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(tbEmail.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng nhập email.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(cbMalop.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng chọn mã lớp.");
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(cbNganhhoc.Text))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng chọn mã lớp.");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(employeeImagePath))
+                {
+                    MessageBox.Show("Lỗi: Vui lòng chọn một ảnh.");
+                    return;
+                }
+
+                // Kiểm tra ID có trùng lặp không
                 int newId = int.Parse(tbId.Text);
                 if (lstEmp.Any(emp => emp.Id == newId))
                 {
@@ -83,6 +135,7 @@ namespace Quanlyview
                     return;
                 }
 
+                // Tạo đối tượng Employee mới
                 Employee newEmp = new Employee
                 {
                     Id = newId,
@@ -92,13 +145,17 @@ namespace Quanlyview
                     Sodienthoai = tbPhone.Text,
                     Email = tbEmail.Text,
                     Malop = cbMalop.Text,
+                    Nganhhoc = cbNganhhoc.Text,
                     ImagePath = employeeImagePath,
                     BirthDate = dateTimePicker1.Value.Date
                 };
 
+                // Thêm vào danh sách và cập nhật DataGridView
                 lstEmp.Add(newEmp);
                 bs.ResetBindings(false);
-                ClearInputFields();
+                ClearInputFields(); // Xóa dữ liệu các ô nhập sau khi thêm xong
+
+                tbId.Enabled = true; // Đảm bảo mở lại ô ID cho lần thêm tiếp theo
             }
             catch (FormatException)
             {
@@ -109,6 +166,10 @@ namespace Quanlyview
                 MessageBox.Show("Đã xảy ra lỗi: " + ex.Message);
             }
         }
+
+
+
+
 
         private void btEdit_Click(object sender, EventArgs e)
         {
@@ -126,6 +187,7 @@ namespace Quanlyview
                 em.Sodienthoai = tbPhone.Text;
                 em.Email = tbPhone.Text;
                 em.Malop = cbMalop.Text;
+                em.Nganhhoc = cbNganhhoc.Text;
                 em.ImagePath = employeeImagePath; // Save the image path
                 em.BirthDate = dateTimePicker1.Value.Date; // Update the BirthDate from DateTimePicker
                 bs.ResetBindings(false);
@@ -157,21 +219,28 @@ namespace Quanlyview
             ckGender.Checked = em.Gender;
             tbAddress.Text = em.Address;
             tbPhone.Text = em.Sodienthoai;
-            tbPhone.Text = em.Email;
+            tbEmail.Text = em.Email;
             cbMalop.Text = em.Malop;
-            dateTimePicker1.Value = em.BirthDate; // Display BirthDate in DateTimePicker
+            cbNganhhoc.Text = em.Nganhhoc;
+
+            // Kiểm tra ngày sinh có hợp lệ không
+            dateTimePicker1.Value = (em.BirthDate != DateTime.MinValue) ? em.BirthDate : DateTime.Now;
 
             // Load employee image if exists
             if (!string.IsNullOrEmpty(em.ImagePath) && System.IO.File.Exists(em.ImagePath))
             {
                 pbEmployeeImage.Image = Image.FromFile(em.ImagePath);
-                pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage; // Chỉnh lại kích thước ảnh cho vừa khung
+                pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage;
             }
             else
             {
-                pbEmployeeImage.Image = null; // Clear image if not available
+                pbEmployeeImage.Image = null;
             }
+
+            tbId.Enabled = false;
         }
+
+
 
         private void ClearInputFields()
         {
@@ -181,9 +250,12 @@ namespace Quanlyview
             tbPhone.Text = "";
             tbEmail.Text = "";
             cbMalop.Text = "";
+            cbNganhhoc.Text = "";
             ckGender.Checked = false;
             pbEmployeeImage.Image = null; // Clear image display
             dateTimePicker1.Value = DateTime.Now; // Reset DateTimePicker to current date
+
+            tbId.Enabled = true;
         }
 
         private void SetupImageList()
@@ -209,12 +281,19 @@ namespace Quanlyview
 
         private void btSelectImage_Click(object sender, EventArgs e)
         {
+            // Kiểm tra xem tên đã được nhập hay chưa
+            if (string.IsNullOrWhiteSpace(tbName.Text))
+            {
+                MessageBox.Show("Lỗi: Vui lòng nhập tên trước khi chọn ảnh.");
+                return;
+            }
+
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Image Files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    employeeImagePath = ofd.FileName; // Store the image path
+                    employeeImagePath = ofd.FileName; // Lưu đường dẫn ảnh
 
                     // Kiểm tra đường dẫn trước khi hiển thị
                     if (System.IO.File.Exists(employeeImagePath))
@@ -229,6 +308,7 @@ namespace Quanlyview
                 }
             }
         }
+
 
         // Method to set a specific date for the DateTimePicker (if needed)
         private void SetDateForDateTimePicker(DateTime date)
@@ -247,7 +327,6 @@ namespace Quanlyview
         {
 
         }
-
         private void tbPhone_TextChanged(object sender, EventArgs e)
         {
 

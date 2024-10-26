@@ -54,10 +54,11 @@
             label2.Size = new Size(70, 20);
             label2.TabIndex = 1;
             label2.Text = "Mật khẩu";
+            label2.Click += label2_Click;
             // 
             // tbTaiKhoan
             // 
-            tbTaiKhoan.Location = new Point(130, 36);
+            tbTaiKhoan.Location = new Point(130, 40);
             tbTaiKhoan.Margin = new Padding(3, 4, 3, 4);
             tbTaiKhoan.Name = "tbTaiKhoan";
             tbTaiKhoan.Size = new Size(239, 27);
@@ -76,24 +77,27 @@
             // 
             // btDangNhap
             // 
+            btDangNhap.BackColor = SystemColors.MenuHighlight;
+            btDangNhap.ForeColor = SystemColors.ControlText;
             btDangNhap.Location = new Point(69, 190);
             btDangNhap.Margin = new Padding(3, 4, 3, 4);
             btDangNhap.Name = "btDangNhap";
             btDangNhap.Size = new Size(113, 44);
             btDangNhap.TabIndex = 4;
             btDangNhap.Text = "Đăng nhập";
-            btDangNhap.UseVisualStyleBackColor = true;
+            btDangNhap.UseVisualStyleBackColor = false;
             btDangNhap.Click += btDangNhap_Click;
             // 
             // btThoat
             // 
+            btThoat.BackColor = Color.Crimson;
             btThoat.Location = new Point(213, 190);
             btThoat.Margin = new Padding(3, 4, 3, 4);
             btThoat.Name = "btThoat";
             btThoat.Size = new Size(113, 44);
             btThoat.TabIndex = 5;
             btThoat.Text = "Thoát";
-            btThoat.UseVisualStyleBackColor = true;
+            btThoat.UseVisualStyleBackColor = false;
             btThoat.Click += btThoat_Click;
             // 
             // checkBox1
@@ -112,6 +116,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.LightCyan;
             ClientSize = new Size(392, 256);
             Controls.Add(checkBox1);
             Controls.Add(btThoat);
