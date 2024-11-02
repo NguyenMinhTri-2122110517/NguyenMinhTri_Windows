@@ -77,7 +77,7 @@
             // 
             // btDangNhap
             // 
-            btDangNhap.BackColor = SystemColors.MenuHighlight;
+            btDangNhap.BackColor = Color.Green;
             btDangNhap.ForeColor = SystemColors.ControlText;
             btDangNhap.Location = new Point(69, 190);
             btDangNhap.Margin = new Padding(3, 4, 3, 4);
@@ -90,7 +90,7 @@
             // 
             // btThoat
             // 
-            btThoat.BackColor = Color.Crimson;
+            btThoat.BackColor = Color.Firebrick;
             btThoat.Location = new Point(213, 190);
             btThoat.Margin = new Padding(3, 4, 3, 4);
             btThoat.Name = "btThoat";
@@ -116,7 +116,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.LightCyan;
+            BackColor = Color.LightYellow;
             ClientSize = new Size(392, 256);
             Controls.Add(checkBox1);
             Controls.Add(btThoat);

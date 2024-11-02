@@ -54,6 +54,8 @@
             tbEmail = new TextBox();
             label9 = new Label();
             cbNganhhoc = new ComboBox();
+            label11 = new Label();
+            tbSearch = new TextBox();
             ((System.ComponentModel.ISupportInitialize)dgvEmployee).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbEmployeeImage).BeginInit();
             SuspendLayout();
@@ -92,7 +94,7 @@
             dgvEmployee.RowHeadersWidth = 51;
             dgvEmployee.Size = new Size(1222, 194);
             dgvEmployee.TabIndex = 2;
-            dgvEmployee.CellContentClick += dgvEmployee_CellContentClick;
+            //dgvEmployee.CellContentClick += dgvEmployee_CellContentClick;
             dgvEmployee.RowEnter += dgvEmployee_RowEnter;
             // 
             // label1
@@ -251,10 +253,10 @@
             // 
             // pbEmployeeImage
             // 
-            pbEmployeeImage.Location = new Point(1069, 373);
+            pbEmployeeImage.Location = new Point(1057, 378);
             pbEmployeeImage.Margin = new Padding(3, 4, 3, 4);
             pbEmployeeImage.Name = "pbEmployeeImage";
-            pbEmployeeImage.Size = new Size(125, 168);
+            pbEmployeeImage.Size = new Size(156, 158);
             pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage;
             pbEmployeeImage.TabIndex = 22;
             pbEmployeeImage.TabStop = false;
@@ -314,12 +316,31 @@
             cbNganhhoc.Size = new Size(254, 28);
             cbNganhhoc.TabIndex = 29;
             // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(20, 15);
+            label11.Name = "label11";
+            label11.Size = new Size(70, 20);
+            label11.TabIndex = 30;
+            label11.Text = "Tìm kiếm";
+            // 
+            // tbSearch
+            // 
+            tbSearch.Location = new Point(108, 12);
+            tbSearch.Name = "tbSearch";
+            tbSearch.Size = new Size(237, 27);
+            tbSearch.TabIndex = 31;
+            // 
             // Quanly
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.LightCyan;
+            BackColor = Color.LightYellow;
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1248, 554);
+            Controls.Add(tbSearch);
+            Controls.Add(label11);
             Controls.Add(cbNganhhoc);
             Controls.Add(label9);
             Controls.Add(tbEmail);
@@ -387,5 +408,7 @@
         private Label label9;
         private Label label10;
         private ComboBox cbNganhhoc;
+        private Label label11;
+        private TextBox tbSearch;
     }
 }

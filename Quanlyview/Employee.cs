@@ -8,16 +8,16 @@ namespace Quanlyview
 {
     public class Employee
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-        public bool Gender { get; set; }
+        public int MaSV { get; set; }
+        public string TenSV { get; set; }
+        public DateTime NgaySinh { get; set; }
+        public bool GioiTinh { get; set; }
 
-        public string Address {  get; set; }
-        public string Sodienthoai { get; set; }
+        public string DiaChi {  get; set; }
+        public string SoDienThoai { get; set; }
         public string Email { get; set; }
-        public string Malop { get; set; }
-        public string Nganhhoc { get; set; }
+        public string MaLop { get; set; }
+        public string NganhHoc { get; set; }
 
         public string ImagePath { get; set; }
     }

@@ -4,6 +4,7 @@ namespace Quanlyview
     {
         string tentaikhoan = "tri";
         string matkhau = "2808";
+
         public Form1()
         {
             InitializeComponent();

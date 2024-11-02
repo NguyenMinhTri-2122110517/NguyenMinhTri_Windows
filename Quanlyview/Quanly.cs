@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Drawing; // Ensure you have this using directive for Image
+using System.Data.SqlClient;
 
 namespace Quanlyview
 {
     public partial class Quanly : Form
     {
+        private string strCon = @"Data Source=LAPTOP-L9MO5U5F;Initial Catalog=Employee;User ID=sa;Password=123;Encrypt=False;";
+        private SqlConnection sqlCon; // Khai báo SqlConnection
+
         public List<Employee> lstEmp = new List<Employee>();
         private BindingSource bs = new BindingSource();
         public bool isThoat = true;
@@ -20,11 +24,13 @@ namespace Quanlyview
             InitializeComponent();
             SetupImageList();
 
+            tbSearch.TextChanged += tbSearch_TextChanged;
+
             //ngay sinh
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "dd MMMM yyyy";
             // Handle value changes (optional)
-            dateTimePicker1.ShowUpDown = true;
+            dateTimePicker1.ShowUpDown = false;
         }
 
         private void Quanly_Load(object sender, EventArgs e)
@@ -34,18 +40,116 @@ namespace Quanlyview
             dgvEmployee.DataSource = bs;
             SetupDataGridView(); // Setup DataGridView columns
             dateTimePicker1.Value = DateTime.Now; // Set the default date to now
+            dgvEmployee.EditMode = DataGridViewEditMode.EditProgrammatically;
 
         }
 
         public List<Employee> GetData()
         {
-            // Sample data can be added here if needed
-            return lstEmp;
+            List<Employee> employee = new List<Employee>();
+
+            using (sqlCon = new SqlConnection(strCon)) // Sử dụng từ khóa using để quản lý tài nguyên
+            {
+                sqlCon.Open(); // Mở kết nối
+
+                // Câu truy vấn để lấy dữ liệu
+                string query = "SELECT MaSV, TenSV, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, MaLop, NganhHoc, ImagePath FROM Employee";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlCon)) // Tạo SqlCommand
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader()) // Sử dụng using cho SqlDataReader
+                    {
+                        while (reader.Read()) // Đọc dữ liệu
+                        {
+                            Employee emp = new Employee
+                            {
+                                MaSV = reader.GetInt32(0), // Mã
+                                TenSV = reader.GetString(1), // Tên
+                                NgaySinh = reader.GetDateTime(2), // Ngày sinh
+                                GioiTinh = reader.GetBoolean(3), // Giới tính
+                                DiaChi = reader.GetString(4), // Địa chỉ
+                                SoDienThoai = reader.GetString(5),
+                                Email = reader.GetString(6),
+                                MaLop = reader.GetString(7),
+                                NganhHoc = reader.GetString(8),
+                                ImagePath = reader.IsDBNull(9) ? null : reader.GetString(9) // Ảnh
+                            };
+                            employee.Add(emp); // Thêm vào danh sách
+                        }
+                    }
+                }
+            }
+            return employee; // Trả về danh sách nhân viên
         }
+        private void AddEmployee(Employee newEmp)
+        {
+            using (sqlCon = new SqlConnection(strCon))
+            {
+                sqlCon.Open();
+                string query = "INSERT INTO Employee (MaSV, TenSV, NgaySinh, GioiTinh, DiaChi, SoDienThoai, Email, MaLop, NganhHoc, ImagePath) VALUES (@MaSV, @TenSV, @NgaySinh, @GioiTinh, @DiaChi, @SoDienThoai, @Email, @MaLop, @NganhHoc, @ImagePath)";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                {
+                    cmd.Parameters.AddWithValue("@MaSV", newEmp.MaSV);
+                    cmd.Parameters.AddWithValue("@TenSV", newEmp.TenSV);
+                    cmd.Parameters.AddWithValue("@NgaySinh", newEmp.NgaySinh);
+                    cmd.Parameters.AddWithValue("@GioiTinh", newEmp.GioiTinh);
+                    cmd.Parameters.AddWithValue("@DiaChi", newEmp.DiaChi);
+                    cmd.Parameters.AddWithValue("@SoDienThoai", newEmp.SoDienThoai);
+                    cmd.Parameters.AddWithValue("@Email", newEmp.Email);
+                    cmd.Parameters.AddWithValue("@MaLop", newEmp.MaLop);
+                    cmd.Parameters.AddWithValue("@NganhHoc", newEmp.NganhHoc);
+                    cmd.Parameters.AddWithValue("@ImagePath", newEmp.ImagePath);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void UpdateEmployee(Employee emp)
+        {
+            using (sqlCon = new SqlConnection(strCon))
+            {
+                sqlCon.Open();
+                string query = "UPDATE Employee SET TenSV=@TenSV, NgaySinh=@NgaySinh, GioiTinh=@GioiTinh, DiaChi=@DiaChi, SoDienThoai=@SoDienThoai, Email=@Email, MaLop=@MaLop, NganhHoc=@NganhHoc, ImagePath=@ImagePath WHERE MaSV=@MaSV";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                {
+                    cmd.Parameters.AddWithValue("@MaSV", emp.MaSV);
+                    cmd.Parameters.AddWithValue("@TenSV", emp.TenSV);
+                    cmd.Parameters.AddWithValue("@NgaySinh", emp.NgaySinh);
+                    cmd.Parameters.AddWithValue("@GioiTinh", emp.GioiTinh);
+                    cmd.Parameters.AddWithValue("@DiaChi", emp.DiaChi);
+                    cmd.Parameters.AddWithValue("@SoDienThoai", emp.SoDienThoai);
+                    cmd.Parameters.AddWithValue("@Email", emp.Email);
+                    cmd.Parameters.AddWithValue("@MaLop", emp.MaLop);
+                    cmd.Parameters.AddWithValue("@NganhHoc", emp.NganhHoc);
+                    cmd.Parameters.AddWithValue("@ImagePath", emp.ImagePath);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void DeleteEmployee(int empId)
+        {
+            using (sqlCon = new SqlConnection(strCon))
+            {
+                sqlCon.Open();
+                string query = "DELETE FROM Employee WHERE MaSV=@MaSV";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                {
+                    cmd.Parameters.AddWithValue("@MaSV", empId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
 
         private void SetupDataGridView()
         {
             dgvEmployee.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvEmployee.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvEmployee.Columns[0].HeaderText = "Mã sv";
             dgvEmployee.Columns[1].HeaderText = "Tên sv";
             dgvEmployee.Columns[2].HeaderText = "Ngày Sinh";
@@ -73,6 +177,17 @@ namespace Quanlyview
             if (isThoat) Application.Exit();
         }
 
+        // Add this method for email and phone validation
+        private bool IsValidEmail(string email)
+        {
+            return email.EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool IsValidPhoneNumber(string phone)
+        {
+            return phone.All(char.IsDigit);
+        }
+
         private void btAddNew_Click(object sender, EventArgs e)
         {
             try
@@ -83,6 +198,12 @@ namespace Quanlyview
                 if (string.IsNullOrWhiteSpace(tbId.Text))
                 {
                     MessageBox.Show("Lỗi: Vui lòng nhập mã sinh viên.");
+                    return;
+                }
+
+                if (tbName.Text.Any(ch => !char.IsLetter(ch) && !char.IsWhiteSpace(ch)))
+                {
+                    MessageBox.Show("Lỗi: Tên sinh viên không được chứa số hoặc ký tự đặc biệt.");
                     return;
                 }
 
@@ -98,15 +219,15 @@ namespace Quanlyview
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(tbPhone.Text))
+                if (string.IsNullOrWhiteSpace(tbPhone.Text) || !IsValidPhoneNumber(tbPhone.Text))
                 {
-                    MessageBox.Show("Lỗi: Vui lòng nhập số điện thoại.");
+                    MessageBox.Show("Lỗi: Số điện thoại không hợp lệ. Vui lòng chỉ nhập số.");
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(tbEmail.Text))
+                if (string.IsNullOrWhiteSpace(tbEmail.Text) || !IsValidEmail(tbEmail.Text))
                 {
-                    MessageBox.Show("Lỗi: Vui lòng nhập email.");
+                    MessageBox.Show("Lỗi: Email phải có đuôi @gmail.com.");
                     return;
                 }
 
@@ -115,9 +236,10 @@ namespace Quanlyview
                     MessageBox.Show("Lỗi: Vui lòng chọn mã lớp.");
                     return;
                 }
+
                 if (string.IsNullOrWhiteSpace(cbNganhhoc.Text))
                 {
-                    MessageBox.Show("Lỗi: Vui lòng chọn mã lớp.");
+                    MessageBox.Show("Lỗi: Vui lòng chọn ngành học.");
                     return;
                 }
 
@@ -129,30 +251,38 @@ namespace Quanlyview
 
                 // Kiểm tra ID có trùng lặp không
                 int newId = int.Parse(tbId.Text);
-                if (lstEmp.Any(emp => emp.Id == newId))
+
+                if (newId <= 0) // Check if ID is less than or equal to 0
+                {
+                    MessageBox.Show("Lỗi: Mã sinh viên phải lớn hơn 0.");
+                    return;
+                }
+
+                if (lstEmp.Any(emp => emp.MaSV == newId))
                 {
                     MessageBox.Show("Lỗi: ID đã tồn tại. Vui lòng nhập ID khác.");
                     return;
                 }
 
                 // Tạo đối tượng Employee mới
-                Employee newEmp = new Employee
+                var newEmp = new Employee
                 {
-                    Id = newId,
-                    Name = tbName.Text,
-                    Gender = ckGender.Checked,
-                    Address = tbAddress.Text,
-                    Sodienthoai = tbPhone.Text,
+                    MaSV = newId,
+                    TenSV = tbName.Text,
+                    GioiTinh = ckGender.Checked,
+                    DiaChi = tbAddress.Text,
+                    SoDienThoai = tbPhone.Text,
                     Email = tbEmail.Text,
-                    Malop = cbMalop.Text,
-                    Nganhhoc = cbNganhhoc.Text,
+                    MaLop = cbMalop.Text,
+                    NganhHoc = cbNganhhoc.Text,
                     ImagePath = employeeImagePath,
-                    BirthDate = dateTimePicker1.Value.Date
+                    NgaySinh = dateTimePicker1.Value.Date
                 };
 
                 // Thêm vào danh sách và cập nhật DataGridView
                 lstEmp.Add(newEmp);
-                bs.ResetBindings(false);
+                AddEmployee(newEmp);
+                RefreshBindings();
                 ClearInputFields(); // Xóa dữ liệu các ô nhập sau khi thêm xong
 
                 tbId.Enabled = true; // Đảm bảo mở lại ô ID cho lần thêm tiếp theo
@@ -167,30 +297,55 @@ namespace Quanlyview
             }
         }
 
-
-
-
-
         private void btEdit_Click(object sender, EventArgs e)
         {
             if (dgvEmployee.CurrentRow == null) return;
 
-            int idx = dgvEmployee.CurrentRow.Index;
-            Employee em = lstEmp[idx];
+            var idx = dgvEmployee.CurrentRow.Index;
+            var emp = lstEmp[idx];
+            int oldMaSV = emp.MaSV;
 
             try
             {
-                em.Id = int.Parse(tbId.Text);
-                em.Name = tbName.Text;
-                em.Gender = ckGender.Checked;
-                em.Address = tbAddress.Text;
-                em.Sodienthoai = tbPhone.Text;
-                em.Email = tbPhone.Text;
-                em.Malop = cbMalop.Text;
-                em.Nganhhoc = cbNganhhoc.Text;
-                em.ImagePath = employeeImagePath; // Save the image path
-                em.BirthDate = dateTimePicker1.Value.Date; // Update the BirthDate from DateTimePicker
-                bs.ResetBindings(false);
+                int newId = int.Parse(tbId.Text);
+
+                if (oldMaSV != newId)
+                {
+                    MessageBox.Show("Lỗi: Không thể sửa đổi mã sinh viên.");
+                    tbId.Text = oldMaSV.ToString();
+                    return;
+                }
+
+                if (!IsValidPhoneNumber(tbPhone.Text))
+                {
+                    MessageBox.Show("Lỗi: Số điện thoại không hợp lệ. Vui lòng chỉ nhập số.");
+                    return;
+                }
+
+                if (!IsValidEmail(tbEmail.Text))
+                {
+                    MessageBox.Show("Lỗi: Email phải có đuôi @gmail.com.");
+                    return;
+                }
+
+                if (tbName.Text.Any(ch => !char.IsLetter(ch) && !char.IsWhiteSpace(ch)))
+                {
+                    MessageBox.Show("Lỗi: Tên sinh viên không được chứa số hoặc ký tự đặc biệt.");
+                    return;
+                }
+
+                emp.TenSV = tbName.Text;
+                emp.GioiTinh = ckGender.Checked;
+                emp.DiaChi = tbAddress.Text;
+                emp.SoDienThoai = tbPhone.Text;
+                emp.Email = tbEmail.Text;
+                emp.MaLop = cbMalop.Text;
+                emp.NganhHoc = cbNganhhoc.Text;
+                emp.ImagePath = employeeImagePath;
+                emp.NgaySinh = dateTimePicker1.Value.Date;
+
+                RefreshBindings();
+                UpdateEmployee(emp);
                 ClearInputFields();
             }
             catch (FormatException)
@@ -199,64 +354,112 @@ namespace Quanlyview
             }
         }
 
+
+
+
         private void btDelete_Click(object sender, EventArgs e)
         {
             if (dgvEmployee.CurrentRow == null) return;
 
             int idx = dgvEmployee.CurrentRow.Index;
+            var empId = lstEmp[idx].MaSV;
+
             lstEmp.RemoveAt(idx);
-            bs.ResetBindings(false);
+            DeleteEmployee(empId);
+            RefreshBindings();
         }
 
         private void dgvEmployee_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= lstEmp.Count) return;
 
-            Employee em = lstEmp[e.RowIndex];
+            var emp = lstEmp[e.RowIndex];
 
-            tbId.Text = em.Id.ToString();
-            tbName.Text = em.Name;
-            ckGender.Checked = em.Gender;
-            tbAddress.Text = em.Address;
-            tbPhone.Text = em.Sodienthoai;
-            tbEmail.Text = em.Email;
-            cbMalop.Text = em.Malop;
-            cbNganhhoc.Text = em.Nganhhoc;
+            tbId.Text = emp.MaSV.ToString();
+            tbName.Text = emp.TenSV;
+            ckGender.Checked = emp.GioiTinh;
+            tbAddress.Text = emp.DiaChi;
+            tbPhone.Text = emp.SoDienThoai;
+            tbEmail.Text = emp.Email;
+            cbMalop.Text = emp.MaLop;
+            cbNganhhoc.Text = emp.NganhHoc;
 
-            // Kiểm tra ngày sinh có hợp lệ không
-            dateTimePicker1.Value = (em.BirthDate != DateTime.MinValue) ? em.BirthDate : DateTime.Now;
+            // Set the date of birth, or use the current date if none is available
+            dateTimePicker1.Value = (emp.NgaySinh != DateTime.MinValue) ? emp.NgaySinh : DateTime.Now;
 
-            // Load employee image if exists
-            if (!string.IsNullOrEmpty(em.ImagePath) && System.IO.File.Exists(em.ImagePath))
+            if (File.Exists(emp.ImagePath))
             {
-                pbEmployeeImage.Image = Image.FromFile(em.ImagePath);
-                pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage;
+                pbEmployeeImage.Image = Image.FromFile(emp.ImagePath);
             }
             else
             {
                 pbEmployeeImage.Image = null;
             }
-
-            tbId.Enabled = false;
         }
 
+        //private void dgvManager_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (e.RowIndex < 0 || e.RowIndex >= lstEmp.Count) return;
+
+        //    var emp = lstEmp[e.RowIndex];
+
+        //    tbId.Text = emp.MaSV.ToString();
+        //    tbName.Text = emp.TenSV;
+        //    tbPhone.Text = emp.SoDienThoai;
+        //    tbEmail.Text = emp.Email;
+        //    tbAddress.Text = emp.DiaChi;
+        //    cbMalop.Text = emp.MaLop;
+        //    cbNganhhoc.Text = emp.NganhHoc;
+        //    ckGender.Checked = emp.GioiTinh;
+        //    if (emp.NgaySinh != null && emp.NgaySinh >= dateTimePicker1.MinDate && emp.NgaySinh <= dateTimePicker1.MaxDate)
+        //    {
+        //        dateTimePicker1.Value = emp.NgaySinh;
+        //    }
+        //    else
+        //    {
+        //        dateTimePicker1.Value = DateTime.Now; // Default to current date
+        //    }
+
+
+        //    if (File.Exists(emp.ImagePath))
+        //    {
+        //        pbEmployeeImage.Image = Image.FromFile(emp.ImagePath);
+        //    }
+        //    else
+        //    {
+        //        pbEmployeeImage.Image = null;
+        //    }
+        //}
+
+        private void RefreshBindings()
+        {
+            bs.DataSource = lstEmp.ToList();
+            bs.ResetBindings(false);
+            dgvEmployee.ClearSelection(); // Optional: Clear selection for better UX
+        }
 
 
         private void ClearInputFields()
         {
-            tbId.Text = "";
-            tbName.Text = "";
-            tbAddress.Text = "";
-            tbPhone.Text = "";
-            tbEmail.Text = "";
-            cbMalop.Text = "";
-            cbNganhhoc.Text = "";
+            tbId.Clear();
+            tbName.Clear();
+            tbAddress.Clear();
+            tbPhone.Clear();
+            tbEmail.Clear();
+            cbMalop.SelectedIndex = -1; // or clear
+            cbNganhhoc.SelectedIndex = -1; // or clear
             ckGender.Checked = false;
-            pbEmployeeImage.Image = null; // Clear image display
-            dateTimePicker1.Value = DateTime.Now; // Reset DateTimePicker to current date
+            dateTimePicker1.Value = DateTime.Now;
 
-            tbId.Enabled = true;
+            if (pbEmployeeImage.Image != null)
+            {
+                pbEmployeeImage.Image.Dispose();
+                pbEmployeeImage.Image = null; // Clear the image
+            }
+
+            employeeImagePath = string.Empty; // Reset the image path
         }
+
 
         private void SetupImageList()
         {
@@ -288,23 +491,18 @@ namespace Quanlyview
                 return;
             }
 
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                ofd.Filter = "Image Files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    employeeImagePath = ofd.FileName; // Lưu đường dẫn ảnh
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "Image files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
 
-                    // Kiểm tra đường dẫn trước khi hiển thị
-                    if (System.IO.File.Exists(employeeImagePath))
-                    {
-                        pbEmployeeImage.Image = Image.FromFile(employeeImagePath);
-                        pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage; // Chỉnh lại kích thước ảnh
-                    }
-                    else
-                    {
-                        MessageBox.Show("Không thể tải hình ảnh.");
-                    }
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    employeeImagePath = openFileDialog.FileName; // Store the selected image path
+                    pbEmployeeImage.Image = Image.FromFile(employeeImagePath); // Display the image
+                    pbEmployeeImage.SizeMode = PictureBoxSizeMode.StretchImage;
                 }
             }
         }
@@ -336,5 +534,31 @@ namespace Quanlyview
         {
 
         }
+        private void tbSearch_TextChanged(object sender, EventArgs e)
+        {
+            string searchTerm = tbSearch.Text.ToLower();
+
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                bs.DataSource = lstEmp; // Nếu ô tìm kiếm trống, hiển thị danh sách đầy đủ
+            }
+            else
+            {
+                var filteredList = lstEmp.Where(emp =>
+                    emp.MaSV.ToString().Contains(searchTerm) || // Tìm theo mã sinh viên (chuyển sang chuỗi)
+                    emp.TenSV.ToLower().Contains(searchTerm) ||
+                    emp.DiaChi.ToLower().Contains(searchTerm) ||
+                    emp.SoDienThoai.Contains(searchTerm) || // Tìm theo số điện thoại
+                    emp.Email.ToLower().Contains(searchTerm) ||
+                    emp.MaLop.ToLower().Contains(searchTerm) ||
+                    emp.NganhHoc.ToLower().Contains(searchTerm)
+                ).ToList();
+
+                bs.DataSource = filteredList; // Cập nhật BindingSource với kết quả tìm kiếm
+            }
+
+            bs.ResetBindings(false); // Làm mới DataGridView để hiển thị kết quả lọc
+        }
+
     }
 }
